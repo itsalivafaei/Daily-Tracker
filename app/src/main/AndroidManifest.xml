@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 1. Activity recognition -> SleepReceiver.kt : Extracts sleep events from the API and stores them to the database.
+         2. Boot completed -> BootReceiver.kt : Re-registers to the Sleep API when device boot is complete, in order to continue listening to Sleep API events.
+    -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
