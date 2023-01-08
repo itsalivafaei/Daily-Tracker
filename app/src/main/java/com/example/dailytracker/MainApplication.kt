@@ -25,7 +25,7 @@ class MainApplication : Application() {
         SleepDatabase.getDatabase(applicationContext)
     }
 
-    val repository by lazy {
+    val sleepRepository by lazy {
         SleepRepository(
             sleepSubscriptionStatus = SleepSubscriptionStatus(dataStore),
             sleepSegmentEventDao = database.sleepSegmentEventDao(),

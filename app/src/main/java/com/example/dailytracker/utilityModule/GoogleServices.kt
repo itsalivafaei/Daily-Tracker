@@ -14,8 +14,8 @@ class GoogleServices(private val mainActivityContext: Context) {
             GoogleApiAvailabilityLight.getInstance()
         val status = googleApiAvailabilityLight.isGooglePlayServicesAvailable(mainInstance, minSdkVersion)
         status == ConnectionResult.SUCCESS
-
     }
+
     //Sleep Permission check
     private val activityRecognitionPermissionApproved: () -> Boolean = {
         PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
@@ -28,6 +28,10 @@ class GoogleServices(private val mainActivityContext: Context) {
     fun googlePlayServiceAvailabilityCheck(): Boolean {
         //activity recognition works on minimum SDK 29
         return googlePlayServicesAvailability(mainActivityContext, 29)
+    }
+
+    fun activityApproved(): Boolean {
+        return activityRecognitionPermissionApproved()
     }
 
     fun onClickRequestSleepData(view: View) {
