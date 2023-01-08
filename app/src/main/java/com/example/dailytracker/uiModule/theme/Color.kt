@@ -1,4 +1,4 @@
-package com.example.dailytracker.ui.theme
+package com.example.dailytracker.uiModule.theme
 
 import androidx.compose.ui.graphics.Color
 

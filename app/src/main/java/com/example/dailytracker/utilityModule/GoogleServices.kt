@@ -1,4 +1,4 @@
-package com.example.dailytracker.googleServices
+package com.example.dailytracker.utilityModule
 
 import android.Manifest
 import android.content.Context

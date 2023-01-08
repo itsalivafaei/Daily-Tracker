@@ -1,4 +1,4 @@
-package com.example.dailytracker.ui.theme
+package com.example.dailytracker.uiModule.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
