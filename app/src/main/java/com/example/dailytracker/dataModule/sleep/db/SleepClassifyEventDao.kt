@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SleepClassifyEventDao {
     @Query("SELECT * FROM sleep_classify_events_table ORDER BY time_stamp_seconds DESC")
-    fun getAll(): Flow<List<SleepClassifyEvent>>
+    fun getAll(): Flow<List<SleepClassifyEventEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(sleepClassifyEventEntity: SleepClassifyEventEntity)
