@@ -6,11 +6,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dailytracker.utilityModule.isPermissionGranted
-import com.example.dailytracker.utilityModule.permissionsMap
 
 //val mainViewModel: MainViewModel = MainViewModel()
 private const val TAG = "MainScreen"
-private val permission = permissionsMap["ACTIVITY_RECOGNITION"]
+//private val permission = permissionsMap["ACTIVITY_RECOGNITION"]
 
 
 @Composable
@@ -30,6 +29,7 @@ fun MainScreen(
         LogSleepState(shownResult)
     }
 
+/*
     if (isPermissionGranted(applicationContext, permission!!)) {
         SubscriptionButton(mainViewModel.subscriptionButtonText) {
             mainViewModel.onClickRequestSleepData(applicationContext)
@@ -38,6 +38,7 @@ fun MainScreen(
         // TODO: Implement permission request from compose
         SubscriptionButton(text = "Approve permission")
     }
+*/
 }
 
 // ? Need for showing Rational permission request to user

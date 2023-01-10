@@ -1,13 +1,10 @@
 package com.example.dailytracker
 
-import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.util.Log
-import android.webkit.PermissionRequest
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -25,6 +22,8 @@ import com.example.dailytracker.utilityModule.*
 
 class MainActivity : ComponentActivity() {
 
+    lateinit var activityRecognitionPermissionRequest: PermissionStatus
+
     companion object {
         private const val TAG = "MainActivity"
     }
@@ -33,12 +32,12 @@ class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted: Boolean ->
-            permissionStatus = if (isGranted) {
-                Log.i(TAG, "Permission: Granted")
-                PermissionResult.GRANTED
+            activityRecognitionPermissionRequest = if (isGranted) {
+                Log.i(TAG, "requestPermissionLauncher: Granted")
+                PermissionStatus.GRANTED
             } else {
-                Log.i(TAG, "Permission: Denied")
-                PermissionResult.DENIED
+                Log.i(TAG, "requestPermissionLauncher: Denied")
+                PermissionStatus.DENIED
             }
         }
 
@@ -54,49 +53,6 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        /** Permission for now usage **/
-        try {
-            Log.d(TAG, "try block for permission")
-            requestPermissionLauncher.launch(Permissions.ACTIVITY_RECOGNITION.value)
-        } catch (exception: ActivityNotFoundException) {
-            Log.e(TAG, "ActivityNotFoundException")
-        }
-
-        /** Handling permission **/
-        /*
-        val activityRecognitionPermission = finalPermissionRequest(
-            applicationContext,
-            this,
-            Permissions.ACTIVITY_RECOGNITION.value
-        )
-
-        when(activityRecognitionPermission) {
-            PermissionResult.GRANTED -> {
-                Log.d(TAG, "Permission Granted: ${Permissions.ACTIVITY_RECOGNITION.value}")
-                // TODO: Update for usage
-            }
-            PermissionResult.RATIONAL -> {
-                Log.d(TAG, "Permission Rational: ${Permissions.ACTIVITY_RECOGNITION.value}")
-                // TODO: make Snack bar
-            }
-            PermissionResult.REQUEST -> {
-                Log.d(TAG, "Permission Request: ${Permissions.ACTIVITY_RECOGNITION.value}")
-                try {
-                    requestPermissionLauncher.launch(Permissions.ACTIVITY_RECOGNITION.value)
-                } catch (exception: ActivityNotFoundException) {
-                    Log.e(TAG, "ActivityNotFoundException")
-                }
-                permissionStatus
-            }
-            PermissionResult.DENIED -> {
-                Log.d(TAG, "Permission Denied: ${Permissions.ACTIVITY_RECOGNITION.value}.")
-            }
-            else -> {
-                Log.i(TAG, "else state in when happened.")
-            }
-        }
-         */
-
         setContent {
             DailyTrackerTheme {
                 // A surface container using the 'background' color from the theme
@@ -109,10 +65,48 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-fun requestPermission() {
+    override fun onStart() {
+        super.onStart()
 
+        /** Checking permissions here**/
+        activityRecognitionPermissionRequest = finalPermissionRequest(
+            applicationContext,
+            this,
+            0
+        )
+
+        while (activityRecognitionPermissionRequest != PermissionStatus.GRANTED ||
+            activityRecognitionPermissionRequest != PermissionStatus.DENIED) {
+            when (activityRecognitionPermissionRequest) {
+                PermissionStatus.GRANTED -> {
+                    Log.d(TAG, "Permission Granted: activityRecognition.")
+                    // TODO: Update for usage
+                }
+                PermissionStatus.RATIONAL -> {
+                    Log.d(TAG, "Permission Rational: activityRecognition.")
+                    activityRecognitionPermissionRequest = PermissionStatus.RATIONAL
+                    // TODO: make Snack bar
+                }
+                PermissionStatus.REQUEST -> {
+                    Log.d(TAG, "Permission Request: activityRecognition.")
+                    activityRecognitionPermissionRequest = PermissionStatus.REQUEST
+                    try {
+                        Log.d(TAG, "try block for permission")
+                        requestPermissionLauncher.launch(permissionsList[0])
+                    } catch (exception: ActivityNotFoundException) {
+                        Log.e(TAG, "ActivityNotFoundException")
+                    }
+                }
+                PermissionStatus.DENIED -> {
+                    Log.d(TAG, "Permission Denied: activityRecognition.")
+                }
+                else -> {
+                    Log.d(TAG, "BIG TROUBLE! Permission request fall in else condition.")
+                }
+            }
+        }
+    }
 }
 
 @Composable
