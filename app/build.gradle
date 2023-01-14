@@ -1,14 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    //id 'com.google.devtools.ksp' version "1.7.21-1.0.8"
+    id 'com.google.devtools.ksp' version "1.7.21-1.0.8"
+    //id 'com.google.devtools.ksp' version "1.8.0-1.0.8"
 }
 
 android {
-    namespace 'com.example.dailytracker'
+    namespace 'mobsensing.edu.dreamy'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.dailytracker"
+        applicationId "mobsensing.edu.dreamy"
         minSdk 29
         targetSdk 33
         versionCode 1
@@ -37,7 +40,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion "$compose_version"
     }
     packagingOptions {
         resources {
@@ -47,35 +50,45 @@ android {
 }
 
 dependencies {
+    //activity
+    implementation "androidx.activity:activity-compose:$activity_version"
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    //compose
+    implementation "androidx.compose.ui:ui:$compose_ui"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui"
+    implementation "androidx.compose.material3:material3:$compose_material3"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui"
+
+    //lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     // Complete dependency
     // implementation 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.6.1'
-    implementation "androidx.compose.ui:ui:1.3.2"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.3.2"
-    implementation 'androidx.compose.material3:material3:1.1.0-alpha03'
+
+    //core
+    implementation 'androidx.core:core-ktx:1.9.0'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:truth:1.5.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.3.2"
-    debugImplementation "androidx.compose.ui:ui-tooling:1.3.2"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:1.3.2"
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 
     //---------------------------------------------------------------------------------------
     //1. Play Service: Activity recognition library
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     //2. Room components
-    implementation "androidx.room:room-runtime:2.4.3"
-    annotationProcessor "androidx.room:room-compiler:2.4.3"
-    //TODO: ksp "androidx.room:room-compiler:2.4.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    //annotationProcessor "androidx.room:room-compiler:2.4.3"
+    ksp "androidx.room:room-compiler:$room_version"
     //OPTIONAL: Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.4.3"
+    implementation "androidx.room:room-ktx:$room_version"
     //OPTIONAL: test helpers
-    testImplementation "androidx.room:room-testing:2.4.3"
+    testImplementation "androidx.room:room-testing:$room_version"
     //OPTIONAL: Paging 3 Integration
     //implementation "androidx.room:room-paging:2.4.3"
 
@@ -84,4 +97,11 @@ dependencies {
 
     //4. Kotlin Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+
+//    implementation 'com.google.devtools.ksp:symbol-processing-gradle-plugin:1.8.0-1.0.8'
+//    implementation 'com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.7.21-1.0.8'
+
+    // https://mvnrepository.com/artifact/com.google.devtools.ksp/symbol-processing-api
+//    runtimeOnly 'com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.8'
 }
