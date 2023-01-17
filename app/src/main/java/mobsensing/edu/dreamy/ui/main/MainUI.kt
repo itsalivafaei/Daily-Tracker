@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import mobsensing.edu.dreamy.ui.DisplaySnackbar
 import mobsensing.edu.dreamy.ui.theme.DailyTrackerTheme
 
 private const val TAG = "MainScreen"
@@ -35,6 +36,8 @@ fun MainUi(
                 applicationContext
             )
         }
+        Spacer(modifier = modifier.padding(top = 8.dp))
+        DisplaySnackbar()
     }
 }
 
@@ -78,8 +81,7 @@ fun SubscriptionBtn(modifier: Modifier = Modifier, text: String, context: Contex
 }
 
 @Composable
-fun PermissionSnackbar(){
-
+fun ExtraButton(){
 }
 
 @Preview

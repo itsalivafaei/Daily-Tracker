@@ -5,7 +5,9 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 //import com.example.dailytracker.MainApplication
 //import com.example.dailytracker.data.sleep.SleepRepository
 //import com.example.dailytracker.data.sleep.db.SleepClassifyEventEntity
@@ -26,6 +28,7 @@ class SleepReceiver : BroadcastReceiver() {
 
     companion object {
         const val TAG = "SleepReceiver"
+        @RequiresApi(Build.VERSION_CODES.S)
         @SuppressLint("UnspecifiedImmutableFlag")
         fun createSleepReceiverPendingIntent(context: Context): PendingIntent {
             val sleepIntent = Intent(context, SleepReceiver::class.java)
@@ -33,7 +36,7 @@ class SleepReceiver : BroadcastReceiver() {
                 context,
                 0,
                 sleepIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT + PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         }
     }

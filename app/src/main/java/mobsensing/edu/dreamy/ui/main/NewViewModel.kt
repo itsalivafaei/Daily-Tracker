@@ -3,8 +3,10 @@ package mobsensing.edu.dreamy.ui.main
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -53,7 +55,6 @@ class NewViewModel(private val sleepRepository: SleepRepository): ViewModel() {
         }
     }
 
-//    private val _reportState = MutableStateFlow(ReportState())
     private val outputState = MutableStateFlow(Output())
     private val repositoryState: StateFlow<RepositoryState> =
         combine(
@@ -107,8 +108,6 @@ class NewViewModel(private val sleepRepository: SleepRepository): ViewModel() {
         initialValue = null
     )
 */
-    // ! Button subscription text should be stateflow
-
 
     // * First attempt
 /*
@@ -149,6 +148,7 @@ class NewViewModel(private val sleepRepository: SleepRepository): ViewModel() {
     }
 
     // ! Should check permission in Compose
+    @RequiresApi(Build.VERSION_CODES.S)
     val onClickRequestSleepData: (Context) -> Unit = { applicationContext ->
         sleepPendingIntent =
             SleepReceiver.createSleepReceiverPendingIntent(context = applicationContext)

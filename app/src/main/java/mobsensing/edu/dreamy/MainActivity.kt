@@ -6,25 +6,14 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import mobsensing.edu.dreamy.ui.main.MainScreen
 import mobsensing.edu.dreamy.ui.main.MainUi
-//import com.example.dailytracker.ui.theme.DailyTrackerTheme
-//import com.example.dailytracker.util.*
 import mobsensing.edu.dreamy.ui.theme.DailyTrackerTheme
-import mobsensing.edu.dreamy.util.*
 import mobsensing.edu.dreamy.util.PermissionStatus
 import mobsensing.edu.dreamy.util.finalPermissionRequest
 import mobsensing.edu.dreamy.util.permissionsList
@@ -52,16 +41,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val status: Boolean
-        val sleep: Boolean
-        //Granting permissions
-        GoogleServices(this).let {
-            status = it.googlePlayServiceAvailabilityCheck()
-            sleep = it.activityApproved()
-        }
-
-
         setContent {
             DailyTrackerTheme {
                 // A surface container using the 'background' color from the theme
@@ -123,29 +102,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(status: String, sleep: String) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = "Play Service availability: $status. and sleep: $sleep",
-            modifier = Modifier
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .wrapContentHeight(Alignment.CenterVertically),
-            fontSize = 24.sp
-        )
-        Text(
-            text = stringResource(R.string.long_text),
-            modifier = Modifier
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .wrapContentHeight(Alignment.CenterVertically),
-            fontSize = 24.sp
-        )
-    }
+fun Greeting() {
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     DailyTrackerTheme {
-        Greeting("Default", "Default")
+        Greeting()
     }
 }

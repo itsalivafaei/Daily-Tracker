@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <!-- 1. Activity recognition -> SleepReceiver.kt : Extracts sleep events from the API and stores them to the database.
+    xmlns:tools="http://schemas.android.com/tools" >
+    <!--
+         1. Activity recognition -> SleepReceiver.kt : Extracts sleep events from the API and stores them to the database.
          2. Boot completed -> BootReceiver.kt : Re-registers to the Sleep API when device boot is complete, in order to continue listening to Sleep API events.
     -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -18,11 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyTracker"
-        tools:targetApi="31">
+        tools:targetApi="31" >
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DailyTracker">
+            android:theme="@style/Theme.DailyTracker" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
