@@ -24,6 +24,12 @@ class PlayServicesAvailabilityChecker @Inject constructor(
 }
 */
 
+enum class PlayServicesAvailableState {
+    INITIALIZING,
+    PLAY_SERVICES_UNAVAILABLE,
+    PLAY_SERVICES_AVAILABLE
+}
+
 class PlayServicesAvailabilityChecker(
     private val context: Context,
     private val googleApiAvailability: GoogleApiAvailability
