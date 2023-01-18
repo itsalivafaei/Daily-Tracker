@@ -6,7 +6,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 //import com.example.dailytracker.MainApplication
 //import com.example.dailytracker.data.sleep.SleepRepository
@@ -30,6 +32,7 @@ class BootReceiver : BroadcastReceiver() {
         const val TAG = "BootReceiver"
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive action: ${intent.action}")
 

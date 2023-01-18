@@ -28,8 +28,10 @@ class SleepReceiver : BroadcastReceiver() {
 
     companion object {
         const val TAG = "SleepReceiver"
+
         @RequiresApi(Build.VERSION_CODES.S)
-        @SuppressLint("UnspecifiedImmutableFlag")
+        // ! Check this one
+//        @SuppressLint("UnspecifiedImmutableFlag")
         fun createSleepReceiverPendingIntent(context: Context): PendingIntent {
             val sleepIntent = Intent(context, SleepReceiver::class.java)
             return PendingIntent.getBroadcast(
