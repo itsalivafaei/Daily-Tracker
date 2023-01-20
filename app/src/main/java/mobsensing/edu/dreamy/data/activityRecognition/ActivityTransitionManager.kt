@@ -171,6 +171,7 @@ class ActivityTransitionManager(private val context: Context) {
                     .build()
             }
         )
+        Log.d(TAG, "activity request: $request")
 
         // This await() suspends until the task completes. For codebases not using coroutines, you
         // can either
@@ -178,23 +179,23 @@ class ActivityTransitionManager(private val context: Context) {
         // - use addOnCompleteListener() to be notified asynchronously when the task completes
         var successfullyRequest = false
 
-            val task =
-                ActivityRecognition
-                    .getClient(context)
-                    .requestActivityTransitionUpdates(request, pendingIntent)
+        val task =
+            ActivityRecognition
+                .getClient(context)
+                .requestActivityTransitionUpdates(request, pendingIntent)
 
-             task.addOnSuccessListener {
-                 Log.d(TAG, "Successfully request for activity transition updates.")
-                 successfullyRequest = true
-             }
+         task.addOnSuccessListener {
+             Log.d(TAG, "Successfully request for activity transition updates.")
+             successfullyRequest = true
+         }
 
-            task.addOnFailureListener { exception ->
-                Log.d(TAG, "Exception when subscribing to sleep data from boot: $exception")
-                successfullyRequest = false
+        task.addOnFailureListener { exception ->
+            Log.d(TAG, "Exception when subscribing to sleep data from boot: $exception")
+            successfullyRequest = false
 
-                // ? My code
-                // TODO: remove activity transition updates (like Sleep BootReceiver)
-            }
+            // ? My code
+            // TODO: remove activity transition updates (like Sleep BootReceiver)
+        }
         return successfullyRequest
     }
 

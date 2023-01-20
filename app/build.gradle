@@ -43,7 +43,7 @@ android {
         viewBinding true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "$compose_version"
+        kotlinCompilerExtensionVersion '1.4.0-alpha02'
     }
     packagingOptions {
         resources {
@@ -67,6 +67,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.core:core-ktx:1.9.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui"

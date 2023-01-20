@@ -23,6 +23,9 @@ class ActivityRecognitionRepository(
     val getMostRecentTransitions: Flow<List<ActivityTransitionRecord>> =
         activityTransitionDao.getMostRecent()
 
+    val getLastTransition: Flow<List<ActivityTransitionRecord>> =
+        activityTransitionDao.getLast()
+
     suspend fun insertTransitionRecord(record: ActivityTransitionRecord) =
         activityTransitionDao.insert(record)
 

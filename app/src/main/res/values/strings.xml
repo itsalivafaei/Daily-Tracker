@@ -5,7 +5,14 @@
     <string name="sleep_report">Sleep Report</string>
     <string name="activity_report">Activity Report</string>
 
-    <!-- Page Names -->
+    <!-- Overview screen values -->
+    <string name="overview_activity_title">Current Activity</string>
+    <string name="overview_sleep_title">Sleep</string>
+    <string name="overview_title">Device Access</string>
+    <string name="overview_subtitle">Last update: %s</string>
+    <string name="overview_play_services_status">Google Play Service Availability:</string>
+    <string name="overview_activity_transition_status">Activity Recognition Status:</string>
+    <string name="overview_sleep_subscription_status">Sleep Subscription Status:</string>
 
     <string name="back_button">Back</string>
 

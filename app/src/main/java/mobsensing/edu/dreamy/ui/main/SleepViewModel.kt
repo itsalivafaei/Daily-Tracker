@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,20 +12,16 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.SleepSegmentRequest
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import mobsensing.edu.dreamy.MainApplication
 import mobsensing.edu.dreamy.data.sleep.SleepRepository
-import mobsensing.edu.dreamy.data.sleep.db.SleepClassifyEventEntity
-import mobsensing.edu.dreamy.data.sleep.db.SleepSegmentEventEntity
 import mobsensing.edu.dreamy.receiver.sleep.SleepReceiver
 import java.util.Calendar
 
-class NewViewModel(private val sleepRepository: SleepRepository): ViewModel() {
+class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() {
 
     private lateinit var sleepPendingIntent: PendingIntent
     companion object {
@@ -42,7 +37,7 @@ class NewViewModel(private val sleepRepository: SleepRepository): ViewModel() {
                 // Create a SavedStateHandle for this ViewModel from extras
                 val savedStateHandle = extras.createSavedStateHandle()
 
-                return NewViewModel(
+                return SleepViewModel(
                     (application as MainApplication).sleepRepository
                 ) as T
             }
@@ -56,7 +51,7 @@ class NewViewModel(private val sleepRepository: SleepRepository): ViewModel() {
     }
 
     private val outputState = MutableStateFlow(Output())
-    private val repositoryState: StateFlow<RepositoryState> =
+    val repositoryState: StateFlow<RepositoryState> =
         combine(
             sleepRepository.subscribedToSleepDataFlow,
             sleepRepository.allSleepSegmentEvents,

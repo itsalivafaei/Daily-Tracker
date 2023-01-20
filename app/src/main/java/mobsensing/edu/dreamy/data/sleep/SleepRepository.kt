@@ -8,6 +8,7 @@ import com.example.dailytracker.data.sleep.db.SleepSegmentEventDao
 import com.example.dailytracker.data.sleep.db.SleepSegmentEventEntity
 */
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import mobsensing.edu.dreamy.data.sleep.datastore.SleepSubscriptionStatus
 import mobsensing.edu.dreamy.data.sleep.db.SleepClassifyEventDao
 import mobsensing.edu.dreamy.data.sleep.db.SleepClassifyEventEntity
@@ -36,6 +37,10 @@ class SleepRepository(
     // main thread.
     val allSleepSegmentEvents: Flow<List<SleepSegmentEventEntity>> =
         sleepSegmentEventDao.getAll()
+
+    // ? New - My Code
+    suspend fun lastSegmentEvent() =
+        sleepSegmentEventDao.getLast().first().first()
 
     suspend fun insertSleepSegment(sleepSegmentEventEntity: SleepSegmentEventEntity) =
         sleepSegmentEventDao.insert(sleepSegmentEventEntity)

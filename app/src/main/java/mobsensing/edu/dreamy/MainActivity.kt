@@ -12,7 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import mobsensing.edu.dreamy.ui.main.MainUi
+import mobsensing.edu.dreamy.ui.main.SleepScreen
 import mobsensing.edu.dreamy.ui.theme.DailyTrackerTheme
 import mobsensing.edu.dreamy.util.PermissionStatus
 import mobsensing.edu.dreamy.util.finalPermissionRequest
@@ -49,10 +49,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     activityRecognitionPermissionRequest?.let {
-                        MainUi(
+/*
+                        SleepScreen(
                             applicationContext = applicationContext,
                             sleepPermission = it.code
                         )
+*/
+                        DreamyApp()
                     }
                 }
             }

@@ -16,6 +16,10 @@ interface SleepSegmentEventDao {
     @Query("SELECT * from sleep_segment_events_table ORDER BY start_time_millis DESC")
     fun getAll(): Flow<List<SleepSegmentEventEntity>>
 
+    // ? New - My Code
+    @Query("SELECT * from sleep_segment_events_table ORDER BY start_time_millis DESC LIMIT 1")
+    fun getLast(): Flow<List<SleepSegmentEventEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(sleepSegmentEventEntity: SleepSegmentEventEntity)
 

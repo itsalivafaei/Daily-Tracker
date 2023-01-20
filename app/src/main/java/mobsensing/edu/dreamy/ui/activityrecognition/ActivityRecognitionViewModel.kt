@@ -66,7 +66,10 @@ class ActivityRecognitionViewModel(
         .stateIn(scope, SharingStarted.Eagerly, false)
 
     // ? This is the most recent
-    val transitionEvents = repository.getMostRecentTransitions
+    val mostRecentTransitionEvents = repository.getMostRecentTransitions
+        .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val lastTransitionEvent = repository.getLastTransition
         .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     var errorMessages by mutableStateOf(emptyList<ErrorMessage>())
