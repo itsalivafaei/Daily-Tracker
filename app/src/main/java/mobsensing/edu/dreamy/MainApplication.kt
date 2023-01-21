@@ -23,6 +23,7 @@ import mobsensing.edu.dreamy.data.activityRecognition.db.ActivityRecognitionData
 import mobsensing.edu.dreamy.data.sleep.SleepRepository
 import mobsensing.edu.dreamy.data.sleep.datastore.SleepSubscriptionStatus
 import mobsensing.edu.dreamy.data.sleep.db.SleepDatabase
+import mobsensing.edu.dreamy.util.PlayServicesAvailabilityChecker
 import javax.inject.Singleton
 
 /**
@@ -63,6 +64,13 @@ class MainApplication : Application() {
         ActivityRecognitionRepository(
             activityTransitionUpdateStatus = ActivityTransitionUpdateStatus(activityTransitionDataStore),
             activityTransitionDao = activityDatabase.activityTransitionDao()
+        )
+    }
+
+    val playServicesState by lazy {
+        PlayServicesAvailabilityChecker(
+            context = applicationContext,
+            googleApiAvailability = GoogleApiAvailability.getInstance()
         )
     }
 }

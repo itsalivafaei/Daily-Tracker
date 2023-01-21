@@ -118,8 +118,5 @@ fun Context.hasPermission(permission: String): Boolean =
 fun Activity.shouldShowRationalFor(permission: String): Boolean =
     ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
 
-val ActivityRecognitionPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+const val ActivityRecognitionPermission =
     android.Manifest.permission.ACTIVITY_RECOGNITION
-} else {
-    "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
-}

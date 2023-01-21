@@ -1,28 +1,21 @@
 package mobsensing.edu.dreamy
 
-import android.Manifest
-import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import mobsensing.edu.dreamy.data.activityRecognition.db.ActivityTransitionRecord
-import mobsensing.edu.dreamy.ui.ActivityRecognitionPermissionState
 import mobsensing.edu.dreamy.ui.OverviewScreen
 import mobsensing.edu.dreamy.ui.activityrecognition.ActivityRecognitionViewModel
 import mobsensing.edu.dreamy.ui.main.SleepScreen
@@ -79,6 +72,10 @@ fun DreamyApp(
         backStackEntry?.destination?.route ?: DreamyScreen.Overview.name
     )
 
+    // Showing snackbar when there's an error requesting updates.
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             DreamyAppBar(
@@ -86,7 +83,8 @@ fun DreamyApp(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         val sleepUiState by sleepViewModel.uiState.collectAsState()
         val sleepRepo by sleepViewModel.repositoryState.collectAsState()
@@ -108,11 +106,11 @@ fun DreamyApp(
 
                 OverviewScreen(
                     context = context,
-                    onActivityCardClick = {},
+                    onActivityCardClick = { navController.navigate(DreamyScreen.ActivityRecognition.name) },
                     lastActivityStartingTimestamp = "lastActivityRecord.last().timestamp.toString()",
                     lastActivityType = "lastActivityRecord.last().activityType.name",
                     lastActivityImage = R.drawable.sitting_girl,
-                    onSleepCardClick = {navController.navigate(DreamyScreen.Sleep.name)},
+                    onSleepCardClick = { navController.navigate(DreamyScreen.Sleep.name) },
                     lastSleepDate = "lastSleepDate",
                     lastSleepDuration = "lastSleepDuration",
                     lastSleepQualityImage = R.drawable.sitting_girl
