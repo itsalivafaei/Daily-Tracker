@@ -2,24 +2,25 @@ package mobsensing.edu.dreamy.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mobsensing.edu.dreamy.R
+import mobsensing.edu.dreamy.data.activityRecognition.db.ActivityTransitionRecord
 import mobsensing.edu.dreamy.data.sleep.db.SleepSegmentEventEntity
 import mobsensing.edu.dreamy.ui.components.CardDisplay
 import mobsensing.edu.dreamy.ui.components.SwitchDisplay
-import mobsensing.edu.dreamy.util.durationConverter
-import mobsensing.edu.dreamy.util.epochMilliToDayMonth
+import mobsensing.edu.dreamy.util.*
+
+const val TAG = "OverviewScreen"
 
 // * Main view
 @Composable
@@ -34,11 +35,10 @@ fun OverviewScreen(
     showDegradedExperience: Boolean,
     needsPermissionRationale: Boolean,
     onActivityCardClick: () -> Unit,
-    lastActivityStartingTimestamp: String,
-    lastActivityType: String,
+    transitionEvents: List<ActivityTransitionRecord>,
     lastActivityImage:Int,
     onSleepCardClick: () -> Unit,
-    lastSleepEvent: SleepSegmentEventEntity,
+    sleepEvents: List<SleepSegmentEventEntity>,
     lastSleepQualityImage: Int,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
@@ -120,9 +120,6 @@ fun OverviewScreen(
 
             Divider(thickness = 1.dp)
 
-            // ! Test
-            Text(text = "Activity updates: $isActivityUpdatesTurnedOn")
-
             ToggleAction(
                 title = R.string.overview_sleep_subscription_status,
                 isToggleOn = isSubscribedToSleepData
@@ -134,23 +131,40 @@ fun OverviewScreen(
         // ? Body
         Spacer(modifier = modifier.height(24.dp))
 
+
         CardDisplay(
             cardTitle = context.getString(R.string.overview_activity_title),
-            cardSubtitle = lastActivityStartingTimestamp,
-            durationOrType = lastActivityType,
+            cardSubtitle =
+            if (transitionEvents.isNotEmpty()) {
+                Log.d(TAG, "transition timestamp: ${transitionEvents.last().timestamp.toEpochMilli()}")
+                "Since" + epochMilliToHourMinute(transitionEvents.last().timestamp.toEpochMilli()) + "ago"
+            } else {
+                " "
+            },
+            durationOrType = if (transitionEvents.isNotEmpty()) {
+                transitionEvents.last().activityType.name
+            } else {
+                "is empty yet"
+            },
             image = lastActivityImage,
             onCardClick = onActivityCardClick
         )
 
         CardDisplay(
             cardTitle = context.getString(R.string.overview_sleep_title),
-            cardSubtitle = epochMilliToDayMonth(
-                lastSleepEvent.endTimeMillis
-            ),
-            durationOrType = durationConverter(
-                start = lastSleepEvent.startTimeMillis,
-                end = lastSleepEvent.endTimeMillis
-            ),
+            cardSubtitle = if (sleepEvents.isNotEmpty()) {
+                epochMilliToDayMonth(sleepEvents.last().endTimeMillis)
+                } else {
+                  " "
+                },
+            durationOrType = if (sleepEvents.isNotEmpty()) {
+                durationConverter(
+                    start = sleepEvents.last().startTimeMillis,
+                    end = sleepEvents.last().endTimeMillis
+                )
+            } else {
+                "is empty yet"
+            },
             image = lastSleepQualityImage,
             onCardClick = onSleepCardClick
         )

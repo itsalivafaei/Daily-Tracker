@@ -123,7 +123,10 @@ fun SleepScreen(
 }
 
 @Composable
-fun SleepEventsList(modifier: Modifier = Modifier, sleepEvents: List<SleepSegmentEventEntity>) {
+fun SleepEventsList(
+    modifier: Modifier = Modifier,
+    sleepEvents: List<SleepSegmentEventEntity>
+) {
     Log.d("SLEEP_EVENT","fun sleepEvents:$sleepEvents")
 
     LazyColumn(
