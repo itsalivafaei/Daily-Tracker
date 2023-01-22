@@ -52,20 +52,15 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.google.android.gms.location.ActivityTransitionEvent
 import com.google.android.gms.location.ActivityTransitionResult
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import mobsensing.edu.dreamy.MainApplication
 import mobsensing.edu.dreamy.data.activityRecognition.ActivityRecognitionRepository
-import mobsensing.edu.dreamy.data.activityRecognition.db.ActivityTransitionDao
 import mobsensing.edu.dreamy.data.activityRecognition.db.ActivityTransitionRecord
 import mobsensing.edu.dreamy.data.activityRecognition.db.asRecord
-import javax.inject.Inject
 
-class DetectedActivityReceiver : BroadcastReceiver() {
+class ActivityRecognitionReceiver : BroadcastReceiver() {
     private val scope = MainScope()
 
     companion object {
@@ -75,7 +70,7 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         @RequiresApi(Build.VERSION_CODES.S)
         @SuppressLint("UnspecifiedImmutableFlag")
         fun createActivityRecognitionReceiverPendingIntent(context: Context): PendingIntent {
-            val activityRecognitionIntent = Intent(context, DetectedActivityReceiver::class.java)
+            val activityRecognitionIntent = Intent(context, ActivityRecognitionReceiver::class.java)
             return PendingIntent.getBroadcast(
                 context,
                 0,
@@ -86,19 +81,22 @@ class DetectedActivityReceiver : BroadcastReceiver() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive action: ${intent.action}")
 
         val repository =
             (context.applicationContext as MainApplication).activityRecognitionRepository
 
-        val result = ActivityTransitionResult.extractResult(intent) ?: return
+        if (ActivityTransitionResult.hasResult(intent)) {
+            val result = ActivityTransitionResult.extractResult(intent)!!
 
-        if (result.transitionEvents.isNotEmpty()) {
-            Log.d(TAG, "ActivityTransition is not empty.")
-            val transitionEvents: List<ActivityTransitionRecord> = result.transitionEvents.map { event ->
-                event.asRecord()
-            }
+            if (result.transitionEvents.isNotEmpty()) {
+                Log.d(TAG, "transitionEvents: ${ result.transitionEvents }")
+                val transitionEvents: List<ActivityTransitionRecord> =
+                    result.transitionEvents.map { event ->
+                        event.asRecord()
+                    }
 //            scope.launch {
 //                dao.insert(
 //                    result.transitionEvents.map { activityTransitionEvent ->
@@ -106,7 +104,10 @@ class DetectedActivityReceiver : BroadcastReceiver() {
 //                    }
 //                )
 //            }
-            addTransitionEventsToDatabase(repository, transitionEvents)
+                addTransitionEventsToDatabase(repository, transitionEvents)
+            } else {
+                Log.d(TAG,"intent:$intent, ActivityTransitionResult -> is empty.")
+            }
         }
     }
 
@@ -114,8 +115,12 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         repository: ActivityRecognitionRepository,
         records: List<ActivityTransitionRecord>
     ) {
-        scope.launch {
-            repository.insertAllTransitionRecords(records)
+        if (records.isNotEmpty()) {
+            scope.launch {
+                repository.insertAllTransitionRecords(records)
+            }
         }
     }
+
+
 }

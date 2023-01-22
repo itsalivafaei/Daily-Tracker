@@ -105,29 +105,22 @@ class ActivityTransitionManager @Inject constructor(
 }
 */
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.gms.location.ActivityRecognition
-import com.google.android.gms.location.ActivityRecognitionClient
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.ActivityTransitionRequest
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.tasks.await
 import mobsensing.edu.dreamy.data.activityRecognition.db.DetectedTransitionType
-import mobsensing.edu.dreamy.receiver.activityrecognition.DetectedActivityReceiver
+import mobsensing.edu.dreamy.receiver.activityrecognition.ActivityRecognitionReceiver
 import mobsensing.edu.dreamy.util.ActivityRecognitionPermission
 import mobsensing.edu.dreamy.util.hasPermission
-import javax.inject.Inject
 
 
 //Class which controls registration and unregistration for activity transition updates.
@@ -139,7 +132,7 @@ class ActivityTransitionManager(private val context: Context) {
         PendingIntent.getBroadcast(
             context,
             0,
-            Intent(context, DetectedActivityReceiver::class.java),
+            Intent(context, ActivityRecognitionReceiver::class.java),
             // Note: must use FLAG_MUTABLE in order for Play Services to add the result data to the
             // intent starting in API level 31. Otherwise the BroadcastReceiver will be started but
             // the Intent will have no data.

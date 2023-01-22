@@ -24,12 +24,12 @@ import mobsensing.edu.dreamy.data.sleep.SleepRepository
 /**
  *  Resubscribes to Sleep data if the device is rebooted.
  * */
-class BootReceiver : BroadcastReceiver() {
+class SleepBootReceiver : BroadcastReceiver() {
     // Used to launch coroutines (non-blocking way to insert data).
     private val scope: CoroutineScope = MainScope()
 
     companion object {
-        const val TAG = "BootReceiver"
+        const val TAG = "SleepBootReceiver"
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -57,6 +57,7 @@ class BootReceiver : BroadcastReceiver() {
      * check is the 28 and below version of the activity recognition permission (needed for
      * accessing sleep data).
      */
+    @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     private fun subscribeToSleepSegmentUpdates(context: Context, pendingIntent: PendingIntent) {
         Log.d(TAG, "subscribeToSleepSegmentUpdates()")

@@ -1,4 +1,4 @@
-package mobsensing.edu.dreamy.ui.main
+package mobsensing.edu.dreamy.ui.sleep
 
 import mobsensing.edu.dreamy.data.sleep.db.SleepClassifyEventEntity
 import mobsensing.edu.dreamy.data.sleep.db.SleepSegmentEventEntity

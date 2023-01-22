@@ -2,6 +2,8 @@ package mobsensing.edu.dreamy
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
@@ -15,6 +17,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.components.SingletonComponent
 import mobsensing.edu.dreamy.data.activityRecognition.ActivityRecognitionRepository
+import mobsensing.edu.dreamy.data.activityRecognition.ActivityTransitionManager
 import mobsensing.edu.dreamy.data.activityRecognition.datastore.ActivityTransitionUpdateStatus
 import mobsensing.edu.dreamy.data.activityRecognition.db.ActivityRecognitionDatabase
 //import com.example.dailytracker.data.sleep.SleepRepository
@@ -41,6 +44,7 @@ private val Context.activityTransitionDataStore: DataStore<Preferences> by prefe
 
 /** Custom app entry point for manual dependency injection **/
 //@HiltAndroidApp
+@RequiresApi(Build.VERSION_CODES.S)
 class MainApplication : Application() {
     // Both database and repository use lazy so they aren't created when the app starts, but only
     // when repository is first needed.
@@ -72,6 +76,10 @@ class MainApplication : Application() {
             context = applicationContext,
             googleApiAvailability = GoogleApiAvailability.getInstance()
         )
+    }
+
+    val activityTransitionManager by lazy {
+        ActivityTransitionManager(applicationContext)
     }
 }
 

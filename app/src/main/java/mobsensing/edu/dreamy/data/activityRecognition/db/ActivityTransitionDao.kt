@@ -18,9 +18,6 @@ interface ActivityTransitionDao {
     @Query("SELECT * FROM activity_transition_records_table ORDER BY timestamp DESC LIMIT 20")
     fun getMostRecent(): Flow<List<ActivityTransitionRecord>>
 
-    @Query("SELECT * FROM activity_transition_records_table ORDER BY timestamp DESC LIMIT 1")
-    fun getLast(): Flow<List<ActivityTransitionRecord>>
-
     @Insert
     suspend fun insert(record: ActivityTransitionRecord)
 

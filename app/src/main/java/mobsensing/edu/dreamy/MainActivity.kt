@@ -1,25 +1,25 @@
 package mobsensing.edu.dreamy
 
-import android.content.ActivityNotFoundException
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import mobsensing.edu.dreamy.ui.main.SleepScreen
+import mobsensing.edu.dreamy.ui.activityrecognition.ActivityRecognitionViewModel
+import mobsensing.edu.dreamy.ui.sleep.SleepViewModel
 import mobsensing.edu.dreamy.ui.theme.DailyTrackerTheme
 import mobsensing.edu.dreamy.util.ActivityRecognitionPermissionState
-import mobsensing.edu.dreamy.util.PermissionStatus
-import mobsensing.edu.dreamy.util.finalPermissionRequest
-import mobsensing.edu.dreamy.util.permissionsList
 
 class MainActivity : ComponentActivity() {
+
+    private val sleepViewModel: SleepViewModel by viewModels()
+    private val activityRecognitionViewModel: ActivityRecognitionViewModel by viewModels()
 
     // ? Previous permission check
 //    private var activityRecognitionPermissionRequest: PermissionStatus? = null
@@ -42,13 +42,19 @@ class MainActivity : ComponentActivity() {
 //            }
 //        }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // * location-samples permission checker method
         val permissionState = ActivityRecognitionPermissionState(this) {
             if (it.permissionGranted) {
-                // TODO: viewModel.toggleActivityTransitionUpdates()
+                Log.d(TAG,"activityRecognitionStatus:${activityRecognitionViewModel.activityTransitionUpdateDataFlow.value}")
+                // ? Replaced
+                // activityRecognitionViewModel.toggleActivityTransitionUpdates()
+                activityRecognitionViewModel.toggle(applicationContext)
+                Log.d(TAG,"activityRecognitionStatus:${activityRecognitionViewModel.activityTransitionUpdateDataFlow.value}")
+                sleepViewModel.toggleRequestSleepData(applicationContext)
             }
         }
 
@@ -59,6 +65,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+//                    Log.d(TAG,"activityRecognitionStatus:${activityRecognitionViewModel.activityTransitionUpdateDataFlow.value}")
+                    DreamyApp(permissionState = permissionState)
+
                     // ? Previous Permission Check
 //                    activityRecognitionPermissionRequest?.let {
 //                        DreamyApp()
@@ -106,17 +115,5 @@ class MainActivity : ComponentActivity() {
 //                Log.d(TAG, "BIG TROUBLE! Permission request fall in else condition.")
 //            }
 //        }
-    }
-}
-
-@Composable
-fun Greeting() {
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DailyTrackerTheme {
-        Greeting()
     }
 }

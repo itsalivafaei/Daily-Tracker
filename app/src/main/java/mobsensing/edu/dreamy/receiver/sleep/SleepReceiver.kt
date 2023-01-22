@@ -21,6 +21,7 @@ import mobsensing.edu.dreamy.MainApplication
 import mobsensing.edu.dreamy.data.sleep.SleepRepository
 import mobsensing.edu.dreamy.data.sleep.db.SleepClassifyEventEntity
 import mobsensing.edu.dreamy.data.sleep.db.SleepSegmentEventEntity
+import mobsensing.edu.dreamy.receiver.activityrecognition.ActivityRecognitionReceiver
 
 class SleepReceiver : BroadcastReceiver() {
     // Used to launch coroutines (non-blocking way to insert data).
@@ -43,6 +44,7 @@ class SleepReceiver : BroadcastReceiver() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive(): $intent")
 
@@ -60,6 +62,9 @@ class SleepReceiver : BroadcastReceiver() {
                 SleepClassifyEvent.extractEvents(intent)
             Log.d(TAG, "SleepClassifyEvent List: $sleepClassifyEvents")
             addSleepClassifyEventsToDatabase(repository, sleepClassifyEvents)
+        } else {
+            Log.d(TAG,"intent:$intent, SleepSegmentEvent && SleepClassifyEvent -> are empty.")
+
         }
     }
 

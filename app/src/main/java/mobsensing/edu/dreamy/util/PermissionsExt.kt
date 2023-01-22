@@ -1,5 +1,6 @@
 package mobsensing.edu.dreamy.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -118,5 +119,9 @@ fun Context.hasPermission(permission: String): Boolean =
 fun Activity.shouldShowRationalFor(permission: String): Boolean =
     ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
 
-const val ActivityRecognitionPermission =
+@SuppressLint("ObsoleteSdkInt")
+val ActivityRecognitionPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
     android.Manifest.permission.ACTIVITY_RECOGNITION
+} else {
+    "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
+}

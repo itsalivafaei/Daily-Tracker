@@ -1,6 +1,8 @@
-package mobsensing.edu.dreamy.ui.main
+package mobsensing.edu.dreamy.ui.sleep
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -11,6 +13,7 @@ private const val TAG = "MainScreen"
 //private val permission = permissionsMap["ACTIVITY_RECOGNITION"]
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,

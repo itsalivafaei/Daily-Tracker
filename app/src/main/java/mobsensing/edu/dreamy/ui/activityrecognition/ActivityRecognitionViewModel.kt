@@ -1,8 +1,10 @@
 package mobsensing.edu.dreamy.ui.activityrecognition
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +16,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.ActivityRecognition
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -22,6 +25,9 @@ import mobsensing.edu.dreamy.MainApplication
 import mobsensing.edu.dreamy.R
 import mobsensing.edu.dreamy.data.activityRecognition.ActivityRecognitionRepository
 import mobsensing.edu.dreamy.data.activityRecognition.ActivityTransitionManager
+import mobsensing.edu.dreamy.receiver.activityrecognition.ActivityRecognitionReceiver
+import mobsensing.edu.dreamy.receiver.activityrecognition.requestsList
+import mobsensing.edu.dreamy.ui.sleep.SleepViewModel
 import mobsensing.edu.dreamy.util.PlayServicesAvailabilityChecker
 
 /**
@@ -29,7 +35,8 @@ import mobsensing.edu.dreamy.util.PlayServicesAvailabilityChecker
  * state relevant to the UI so that state is properly maintained across configuration changes.
  */
 class ActivityRecognitionViewModel(
-    private val repository: ActivityRecognitionRepository
+    private val repository: ActivityRecognitionRepository,
+    private val activityTransitionManager: ActivityTransitionManager
 ) : ViewModel() {
 
     private lateinit var activityRecognitionPendingIntent: PendingIntent
@@ -38,6 +45,7 @@ class ActivityRecognitionViewModel(
     companion object {
         private const val TAG = "ActivityRecognitionViewModel"
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @RequiresApi(Build.VERSION_CODES.S)
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
@@ -47,7 +55,8 @@ class ActivityRecognitionViewModel(
                 val savedStateHandle = extras.createSavedStateHandle()
 
                 return ActivityRecognitionViewModel(
-                    (application as MainApplication).activityRecognitionRepository
+                    (application as MainApplication).activityRecognitionRepository,
+                    application.activityTransitionManager
                 ) as T
             }
         }
@@ -69,9 +78,6 @@ class ActivityRecognitionViewModel(
     val mostRecentTransitionEvents = repository.getMostRecentTransitions
         .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val lastTransitionEvent = repository.getLastTransition
-        .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
-
     var errorMessages by mutableStateOf(emptyList<ErrorMessage>())
         private set
 
@@ -84,20 +90,75 @@ class ActivityRecognitionViewModel(
         return playServicesAvailabilityChecker.isGoogleServicesAvailable()
     }
 
+    private fun updateActivityTransition(updateStatus: Boolean) = scope.launch {
+        repository.updateActivityTransition(updateStatus)
+    }
+
     @RequiresApi(Build.VERSION_CODES.S)
-    fun toggleActivityTransitionUpdates(context: Context) {
-        val manager = ActivityTransitionManager(context)
+    val toggle: (Context) -> Unit = { applicationContext ->
+        activityRecognitionPendingIntent =
+            ActivityRecognitionReceiver
+                .createActivityRecognitionReceiverPendingIntent(context = applicationContext)
+
         if (activityTransitionUpdateDataFlow.value) {
-            stopActivityTransitionUpdates(manager)
+            removeActivityTransitionUpdates(applicationContext, activityRecognitionPendingIntent)
         } else {
-            startActivityTransitionUpdates(manager)
+            requestActivityTransitionUpdates(applicationContext, activityRecognitionPendingIntent)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestActivityTransitionUpdates(context: Context, pendingIntent: PendingIntent) {
+        Log.d(TAG,"requestActivityTransitionUpdates()")
+
+        val task = ActivityRecognition
+            .getClient(context)
+            .requestActivityTransitionUpdates(
+            requestsList,
+            pendingIntent
+        )
+
+        task.addOnSuccessListener {
+            updateActivityTransition(true)
+            Log.d(TAG, "Successfully register to activity transition updates.")
+        }
+
+        task.addOnFailureListener {exception ->
+            Log.d(TAG,"Exception when trying registering for activity recognition updates: $exception")
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun removeActivityTransitionUpdates(context: Context, pendingIntent: PendingIntent) {
+        Log.d(TAG, "removeActivityTransitionUpdates()")
+
+        val task = ActivityRecognition
+            .getClient(context)
+            .removeActivityTransitionUpdates(pendingIntent)
+
+        task.addOnSuccessListener {
+            updateActivityTransition(false)
+            Log.d(TAG, "Successfully remove activity transition updates.")
+        }
+
+        task.addOnFailureListener { exception ->
+            Log.d(TAG, "Exception when unsubscribing to sleep data: $exception")
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    private fun startActivityTransitionUpdates(manager: ActivityTransitionManager) {
+    fun toggleActivityTransitionUpdates() {
+        if (activityTransitionUpdateDataFlow.value) {
+            stopActivityTransitionUpdates()
+        } else {
+            startActivityTransitionUpdates()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun startActivityTransitionUpdates() {
         scope.launch {
-            if (manager.requestActivityTransitionUpdates()) {
+            if (activityTransitionManager.requestActivityTransitionUpdates()) {
                 repository.updateActivityTransition(true)
             } else {
                 errorMessages = errorMessages + ErrorMessage(R.string.error_requesting_updates)
@@ -106,9 +167,9 @@ class ActivityRecognitionViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    private fun stopActivityTransitionUpdates(manager: ActivityTransitionManager) {
+    private fun stopActivityTransitionUpdates() {
         scope.launch {
-            manager.removeActivityTransitionUpdates()
+            activityTransitionManager.removeActivityTransitionUpdates()
             repository.updateActivityTransition(false)
             repository.deleteAllTransitionRecords()
         }

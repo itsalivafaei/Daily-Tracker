@@ -1,9 +1,11 @@
-package mobsensing.edu.dreamy.ui.main
+package mobsensing.edu.dreamy.ui.sleep
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -34,6 +36,7 @@ class MainViewModel(private val sleepRepository: SleepRepository): ViewModel() {
     companion object {
         private const val TAG = "MainViewModel"
 
+        @RequiresApi(Build.VERSION_CODES.S)
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as MainApplication)

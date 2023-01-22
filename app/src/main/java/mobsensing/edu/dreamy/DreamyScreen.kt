@@ -1,6 +1,8 @@
 package mobsensing.edu.dreamy
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -16,15 +18,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import mobsensing.edu.dreamy.data.sleep.db.SleepSegmentEventEntity
+import mobsensing.edu.dreamy.ui.OnboardingScreen
 import mobsensing.edu.dreamy.ui.OverviewScreen
+import mobsensing.edu.dreamy.ui.OverviewViewModel
+import mobsensing.edu.dreamy.ui.PlayServicesAvailableState
 import mobsensing.edu.dreamy.ui.activityrecognition.ActivityRecognitionViewModel
-import mobsensing.edu.dreamy.ui.main.SleepScreen
-import mobsensing.edu.dreamy.ui.main.SleepViewModel
+import mobsensing.edu.dreamy.ui.sleep.SleepScreen
+import mobsensing.edu.dreamy.ui.sleep.SleepViewModel
+import mobsensing.edu.dreamy.util.ActivityRecognitionPermissionState
 
 const val TAG = "DreamyScreen"
 
 // * Enum values that represent the screens in the app
 enum class DreamyScreen(@StringRes val title: Int) {
+    Onboard(title = R.string.onboarding),
+    Initializing(title = R.string.initializing),
+    ServiceUnavailable(title = R.string.service_unavailable),
     Overview(title = R.string.app_name),
     Sleep(title = R.string.sleep_report),
     ActivityRecognition(title = R.string.activity_report)
@@ -39,7 +49,7 @@ fun DreamyAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = { Text(text = stringResource(id = currentScreen.title))},
         modifier = modifier,
         navigationIcon = {
@@ -55,14 +65,15 @@ fun DreamyAppBar(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DreamyApp(
     modifier: Modifier = Modifier,
+    overviewViewModel: OverviewViewModel = viewModel(factory = OverviewViewModel.Factory),
     sleepViewModel: SleepViewModel = viewModel(factory = SleepViewModel.Factory),
     activityRecognitionViewModel: ActivityRecognitionViewModel = viewModel(factory = ActivityRecognitionViewModel.Factory),
-    // TODO: Impl this
-//    permissionState: ActivityRecognitionPermissionState,
+    permissionState: ActivityRecognitionPermissionState,
     navController: NavHostController = rememberNavController()
 ) {
     // Get current back stack entry
@@ -72,61 +83,130 @@ fun DreamyApp(
         backStackEntry?.destination?.route ?: DreamyScreen.Overview.name
     )
 
-    // Showing snackbar when there's an error requesting updates.
+    // * Showing snackbar when there's an error requesting updates.
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    var whichScreen: String by remember { mutableStateOf("") }
+
     Scaffold(
         topBar = {
-            DreamyAppBar(
-                currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
-            )
+            if (whichScreen != DreamyScreen.Onboard.name) {
+                DreamyAppBar(
+                    currentScreen = currentScreen,
+                    canNavigateBack = if (whichScreen != DreamyScreen.Overview.name) {
+                        navController.previousBackStackEntry != null
+                    } else {
+                        false
+                    },
+                    navigateUp = { navController.navigateUp() }
+                )
+            }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
-        val sleepUiState by sleepViewModel.uiState.collectAsState()
+        val playServicesState by overviewViewModel.playServicesAvailableState.collectAsState()
+
+        val isOn by activityRecognitionViewModel.activityTransitionUpdateDataFlow.collectAsState()
+
         val sleepRepo by sleepViewModel.repositoryState.collectAsState()
 
-        val lastActivityRecord by activityRecognitionViewModel.lastTransitionEvent.collectAsState()
+        Log.d("ISON", "activity:$isOn")
+        Log.d("ISON", "sleep:${sleepRepo.subscribedToSleepData}")
+
+        val transitionEvents by activityRecognitionViewModel.mostRecentTransitionEvents.collectAsState()
 
         // ! Using LocalContext instead of applicationContext
         NavHost(
             navController = navController,
-            startDestination = DreamyScreen.Overview.name,
+            startDestination = DreamyScreen.Onboard.name,
             modifier = modifier.padding(innerPadding)
         ) {
+            composable(route = DreamyScreen.Onboard.name) {
+                whichScreen = DreamyScreen.Onboard.name
+                Log.d("MTEST", "DreamyScreen, onboarding composable")
+
+                OnboardingScreen(
+                    onStartClick = {
+                        when (playServicesState) {
+                            PlayServicesAvailableState.Initializing -> {
+                                navController.navigate(DreamyScreen.Initializing.name)
+                            }
+                            PlayServicesAvailableState.PlayServicesUnavailable -> {
+                                navController.navigate(DreamyScreen.ServiceUnavailable.name)
+                            }
+                            PlayServicesAvailableState.PlayServicesAvailable -> {
+                                navController.navigate(DreamyScreen.Overview.name)
+                            }
+                        }
+                    }
+                )
+            }
             composable(route = DreamyScreen.Overview.name) {
+                whichScreen = DreamyScreen.Overview.name
                 val context = LocalContext.current
-                val record = lastActivityRecord.ifEmpty {
+                val record = transitionEvents.ifEmpty {
                     Log.d(TAG, "the record is empty")
                     null
                 }
 
                 OverviewScreen(
                     context = context,
+
+                    // Switch buttons
+                    toggleActivityTransitionUpdates = {
+                        // ? Replaced
+                        // activityRecognitionViewModel.toggleActivityTransitionUpdates()
+                        activityRecognitionViewModel.toggle(context)
+                    },
+                    isActivityUpdatesTurnedOn = isOn,
+
+                    toggleRequestSleepData = { sleepViewModel.toggleRequestSleepData(context) },
+                    isSubscribedToSleepData = sleepRepo.subscribedToSleepData,
+
+                    // Permissions
+                    onClickRequest = { permissionState.requestPermission() },
+                    isGranted = permissionState.permissionGranted,
+                    showDegradedExperience = permissionState.showDegradedExperience,
+                    needsPermissionRationale = permissionState.needsRationale,
+
+                    // Activity Recognition
                     onActivityCardClick = { navController.navigate(DreamyScreen.ActivityRecognition.name) },
                     lastActivityStartingTimestamp = "lastActivityRecord.last().timestamp.toString()",
                     lastActivityType = "lastActivityRecord.last().activityType.name",
                     lastActivityImage = R.drawable.sitting_girl,
+
+                    // Sleep Data
                     onSleepCardClick = { navController.navigate(DreamyScreen.Sleep.name) },
-                    lastSleepDate = "lastSleepDate",
-                    lastSleepDuration = "lastSleepDuration",
+                    // lastSleepEvent = sleepRepo.sleepSegmentEvents.last(),
+                    lastSleepEvent = testEvent.last(),
                     lastSleepQualityImage = R.drawable.sitting_girl
                 )
             }
+
+
             composable(route = DreamyScreen.Sleep.name) {
+                whichScreen = DreamyScreen.Sleep.name
                 val context = LocalContext.current
 
                 SleepScreen(
-                    applicationContext = context,
-                    sleepPermission = 0
+                    context = context,
+//                    sleepEvents = sleepRepo.sleepSegmentEvents
+                    sleepEvents = testEvent
                 )
             }
+
+
             composable(route = DreamyScreen.ActivityRecognition.name) {
+                whichScreen = DreamyScreen.ActivityRecognition.name
 
             }
         }
     }
 }
+
+val testEvent = listOf(
+    SleepSegmentEventEntity(0,0,2),
+    SleepSegmentEventEntity(1674243000_000,1674271800_000,1),
+    SleepSegmentEventEntity(1674329400_000,1674358200_000,0)
+)

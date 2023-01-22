@@ -2,6 +2,9 @@
     <!-- Page Names -->
 
     <string name="app_name">Daily Tracker</string>
+    <string name="onboarding">Onboard</string>
+    <string name="initializing">Initializing</string>
+    <string name="service_unavailable">Service Unavailable</string>
     <string name="sleep_report">Sleep Report</string>
     <string name="activity_report">Activity Report</string>
 
@@ -10,10 +13,24 @@
     <string name="overview_sleep_title">Sleep</string>
     <string name="overview_title">Device Access</string>
     <string name="overview_subtitle">Last update: %s</string>
-    <string name="overview_play_services_status">Google Play Service Availability:</string>
-    <string name="overview_activity_transition_status">Activity Recognition Status:</string>
-    <string name="overview_sleep_subscription_status">Sleep Subscription Status:</string>
+    <string name="overview_play_services_status">Google Play Service Availability</string>
+    <string name="overview_activity_transition_status">Activity Recognition Status</string>
+    <string name="overview_sleep_subscription_status">Sleep Subscription Status</string>
+    <string name="request_permission">You need to accept this permission to use this application.</string>
+    <string name="request_permission_btn">Start services</string>
+    <string name="please_allow_permission">Please allow permission for activity recognition.</string>
+    <string name="permission_denied">Please go to setting to access permission.</string>
+    <string name="permission_granted">We help you with tracking your daily life style.</string>
 
+    <string name="permission_rationale_dialog_title">Permission needed</string>
+    <string name="permission_rationale_dialog_message">This app requires permission to access activity recognition. Please accept.</string>
+
+
+    <!-- Overview screen values -->
+    <string name="waiting_for_sleep_events">Waiting for events. Still nothing!</string>
+
+
+    <string name="play_service_unavailable">Google Play Services are unavailable on this device.</string>
     <string name="back_button">Back</string>
 
     <string name="long_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>

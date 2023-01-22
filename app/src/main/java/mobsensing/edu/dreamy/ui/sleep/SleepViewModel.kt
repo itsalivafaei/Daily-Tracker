@@ -1,4 +1,4 @@
-package mobsensing.edu.dreamy.ui.main
+package mobsensing.edu.dreamy.ui.sleep
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -27,6 +27,7 @@ class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() 
     companion object {
         private const val TAG = "MainViewModel"
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @RequiresApi(Build.VERSION_CODES.S)
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
@@ -50,20 +51,29 @@ class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() 
         }
     }
 
-    private val outputState = MutableStateFlow(Output())
+    @SuppressLint("SimpleDateFormat")
     val repositoryState: StateFlow<RepositoryState> =
         combine(
             sleepRepository.subscribedToSleepDataFlow,
             sleepRepository.allSleepSegmentEvents,
             sleepRepository.allSleepClassifyEvents
         ) { subscribed, segments, classifiers ->
-            RepositoryState(subscribed, segments, classifiers)
+            RepositoryState(
+                subscribed,
+                segments,
+                classifiers
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = RepositoryState()
         )
 
+
+
+//    private val outputState = MutableStateFlow(Output())
+
+/*
     val uiState = combine(outputState, repositoryState) {output, repo ->
         val segments = if (repo.sleepSegmentEvents.isNotEmpty()) {
             repo.sleepSegmentEvents.joinToString { "\t$it\n" }
@@ -85,6 +95,7 @@ class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() 
             buttonText = if (repo.subscribedToSleepData) "Unsubscribe" else "Subscribe"
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Output())
+*/
 
 /*
     private val updateState = combine(_reportState, repositoryState) { report, repo ->
@@ -137,14 +148,13 @@ class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() 
     }
 */
 
-
     private fun updateSubscribedToSleepData(subscribed: Boolean) = viewModelScope.launch {
         sleepRepository.updateSubscribedToSleepData(subscribed)
     }
 
     // ! Should check permission in Compose
     @RequiresApi(Build.VERSION_CODES.S)
-    val onClickRequestSleepData: (Context) -> Unit = { applicationContext ->
+    val toggleRequestSleepData: (Context) -> Unit = { applicationContext ->
         sleepPendingIntent =
             SleepReceiver.createSleepReceiverPendingIntent(context = applicationContext)
 
@@ -188,8 +198,6 @@ class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() 
             Log.d(TAG, "Exception when unsubscribing to sleep data: $exception")
         }
     }
-
-
 
 /*
     private fun sleepSegmentEventsOutput(list: List<SleepSegmentEventEntity>): String {
@@ -238,3 +246,4 @@ class SleepViewModel(private val sleepRepository: SleepRepository): ViewModel() 
     }
 */
 }
+
