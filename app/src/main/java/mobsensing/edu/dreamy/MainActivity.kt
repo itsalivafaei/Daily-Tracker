@@ -21,26 +21,9 @@ class MainActivity : ComponentActivity() {
     private val sleepViewModel: SleepViewModel by viewModels()
     private val activityRecognitionViewModel: ActivityRecognitionViewModel by viewModels()
 
-    // ? Previous permission check
-//    private var activityRecognitionPermissionRequest: PermissionStatus? = null
-
     companion object {
         private const val TAG = "MainActivity"
     }
-
-    // ? Previous permission check
-//    /** Permission Checking **/
-//    private val requestPermissionLauncher =
-//        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-//            isGranted: Boolean ->
-//            activityRecognitionPermissionRequest = if (isGranted) {
-//                Log.i(TAG, "requestPermissionLauncher: Granted")
-//                PermissionStatus.GRANTED
-//            } else {
-//                Log.i(TAG, "requestPermissionLauncher: Denied")
-//                PermissionStatus.DENIED
-//            }
-//        }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,55 +48,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    Log.d(TAG,"activityRecognitionStatus:${activityRecognitionViewModel.activityTransitionUpdateDataFlow.value}")
                     DreamyApp(permissionState = permissionState)
-
-                    // ? Previous Permission Check
-//                    activityRecognitionPermissionRequest?.let {
-//                        DreamyApp()
-//                    }
                 }
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        // ? Previous Permission check
-//        /** Checking permissions here**/
-//        activityRecognitionPermissionRequest = finalPermissionRequest(
-//            applicationContext,
-//            this,
-//            0
-//        )
-//
-//        when (activityRecognitionPermissionRequest) {
-//            PermissionStatus.GRANTED -> {
-//                Log.d(TAG, "Permission activityRecognition:\t${activityRecognitionPermissionRequest}")
-//                // TODO: Update for usage
-//            }
-//            PermissionStatus.RATIONAL -> {
-//                Log.d(TAG, "Permission activityRecognition:\t${activityRecognitionPermissionRequest}")
-//                activityRecognitionPermissionRequest = PermissionStatus.RATIONAL
-//                // TODO: make Snack bar
-//            }
-//            PermissionStatus.REQUEST -> {
-//                Log.d(TAG, "Permission activityRecognition:\t${activityRecognitionPermissionRequest}")
-//                activityRecognitionPermissionRequest = PermissionStatus.REQUEST
-//                try {
-//                    Log.d(TAG, "try block for permission")
-//                    requestPermissionLauncher.launch(permissionsList[0])
-//                } catch (exception: ActivityNotFoundException) {
-//                    Log.e(TAG, "ActivityNotFoundException")
-//                }
-//            }
-//            PermissionStatus.DENIED -> {
-//                Log.d(TAG, "Permission activityRecognition:\t${activityRecognitionPermissionRequest}")
-//            }
-//            else -> {
-//                Log.d(TAG, "BIG TROUBLE! Permission request fall in else condition.")
-//            }
-//        }
     }
 }

@@ -18,7 +18,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.ActivityRecognition
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import mobsensing.edu.dreamy.MainApplication
@@ -27,13 +26,8 @@ import mobsensing.edu.dreamy.data.activityRecognition.ActivityRecognitionReposit
 import mobsensing.edu.dreamy.data.activityRecognition.ActivityTransitionManager
 import mobsensing.edu.dreamy.receiver.activityrecognition.ActivityRecognitionReceiver
 import mobsensing.edu.dreamy.receiver.activityrecognition.requestsList
-import mobsensing.edu.dreamy.ui.sleep.SleepViewModel
 import mobsensing.edu.dreamy.util.PlayServicesAvailabilityChecker
 
-/**
- * View model for the main screen of the app (which also happens to be the only screen). This stores
- * state relevant to the UI so that state is properly maintained across configuration changes.
- */
 class ActivityRecognitionViewModel(
     private val repository: ActivityRecognitionRepository,
     private val activityTransitionManager: ActivityTransitionManager
@@ -61,15 +55,6 @@ class ActivityRecognitionViewModel(
             }
         }
     }
-
-    // ! Check this
-/*
-    val playServicesAvailableState = flow {
-        emit(
-            if (playServicesAvailabilityChecker(context = ))
-        )
-    }
-*/
 
     val activityTransitionUpdateDataFlow = repository.activityTransitionUpdateDataFlow
         .stateIn(scope, SharingStarted.Eagerly, false)

@@ -6,9 +6,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Data Access Object for managing [ActivityTransitionRecord]s in the database.
- */
 @Dao
 interface ActivityTransitionDao {
 

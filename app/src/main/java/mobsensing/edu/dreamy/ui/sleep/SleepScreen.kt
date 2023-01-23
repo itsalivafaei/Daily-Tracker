@@ -21,81 +21,6 @@ import mobsensing.edu.dreamy.util.epochMilliToDayMonthHourMinute
 
 private const val TAG = "MainScreen"
 
-// ? Old - Single - Version
-/*@Composable
-fun SleepScreen(
-    modifier: Modifier = Modifier,
-    applicationContext: Context,
-    sleepPermission: Int,
-    mainViewModel: SleepViewModel = viewModel(factory = SleepViewModel.Factory)
-) {
-    val sleepUiState by mainViewModel.uiState.collectAsState()
-
-    Column(modifier = modifier.fillMaxSize()) {
-        Body(header = sleepUiState.header, body = sleepUiState.sleepData)
-        Spacer(modifier = modifier.padding(top = 8.dp))
-        SubscriptionBtn(text = sleepUiState.buttonText, context = applicationContext) {
-            mainViewModel.toggleRequestSleepData(
-                applicationContext
-            )
-        }
-        Spacer(modifier = modifier.padding(top = 8.dp))
-        DisplaySnackbar()
-    }
-}
-
-@Composable
-fun Body(header: String, body: String, modifier: Modifier = Modifier) {
-    Column() {
-        Text(
-            text = header,
-            modifier = Modifier
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .wrapContentHeight(Alignment.CenterVertically),
-            fontSize = 17.sp,
-            fontWeight = FontWeight.W700
-        )
-        Spacer(modifier = modifier.padding(top = 4.dp))
-        Text(
-            text = body,
-            modifier = Modifier
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .wrapContentHeight(Alignment.CenterVertically),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.W400
-        )
-    }
-}
-
-@Composable
-fun SubscriptionBtn(modifier: Modifier = Modifier, text: String, context: Context, onClickListener: (Context) -> Unit = {}) {
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-    }
-    Button(onClick = { onClickListener(context) },
-    modifier = Modifier
-        .fillMaxWidth(),
-    ) {
-        Text(text = text)
-    }
-}
-
-@Composable
-fun ExtraButton(){
-}
-
-@Preview
-@Composable
-fun SleepPreview() {
-    DailyTrackerTheme {
-        SleepScreen(applicationContext = LocalContext.current, sleepPermission = 0)
-    }
-}*/
-
-// ? New Version
 @Composable
 fun SleepScreen(
     modifier: Modifier = Modifier,
@@ -173,12 +98,3 @@ fun SleepEventsList(
         }
     }
 }
-
-// ? Return current time
-//    fun timeConverter(time: Long): String {
-//        val formatter = DateTimeFormatter.ofPattern("dd/MM HH:mm")
-//        val instant = Instant.ofEpochMilli(time)
-//        val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-//
-//        return formatter.format(date)
-//    }

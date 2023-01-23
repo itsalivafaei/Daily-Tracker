@@ -8,9 +8,6 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 
-/**
- * Defines [SleepSegmentEventEntity] database operations.
- */
 @Dao
 interface SleepSegmentEventDao {
     @Query("SELECT * from sleep_segment_events_table ORDER BY start_time_millis DESC")

@@ -34,17 +34,6 @@ fun epochMilliToHourMinute(time: Long): String {
 }
 
 // ? Not used
-fun milliToHourMinute(millis: Long): String {
-    val inMinute = TimeUnit.MICROSECONDS.toMinutes(millis)
-
-    return if (inMinute >= 60) {
-        val inHour = TimeUnit.MICROSECONDS.toHours(millis)
-        val subMinute = inMinute - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis))
-        "${inHour}hr, ${subMinute}min"
-    } else {
-        "${inMinute}min"
-    }
-}
 fun durationConverter(start: Long, end: Long): String {
     val duration =
         Instant.ofEpochMilli(start).until(Instant.ofEpochMilli(end), ChronoUnit.MINUTES)

@@ -7,9 +7,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 private const val DATABASE_NAME = "sleep_segments_database"
-/**
- *  Stores all sleep segment data.
- */
 @Database(
     entities = [SleepSegmentEventEntity::class, SleepClassifyEventEntity::class],
     version = 1,
@@ -36,9 +33,6 @@ abstract class SleepDatabase : RoomDatabase() {
                     .also {
                         INSTANCE = it
                     }
-
-//                INSTANCE = instance
-//                instance
             }
         }
     }

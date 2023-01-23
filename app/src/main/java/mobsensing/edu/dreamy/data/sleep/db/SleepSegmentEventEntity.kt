@@ -5,9 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.android.gms.location.SleepSegmentEvent
 
-/*
- * Data class for Sleep Segment Events which represents the time the user slept at night.
- */
 @Entity(tableName = "sleep_segment_events_table")
 data class SleepSegmentEventEntity(
     @PrimaryKey

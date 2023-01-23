@@ -4,13 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -58,7 +55,6 @@ fun DisplaySnackbar(modifier: Modifier = Modifier) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDisplay(modifier: Modifier = Modifier, cardTitle: String, cardSubtitle: String, durationOrType: String, image: Int, onCardClick: () -> Unit) {
     Card(
@@ -117,16 +113,6 @@ fun CardDisplay(modifier: Modifier = Modifier, cardTitle: String, cardSubtitle: 
 @Composable
 fun SwitchDisplay(isToggleOn: Boolean, onToggle: () -> Unit) {
     var checked by remember { mutableStateOf(isToggleOn) }
-//    val icon: (@Composable () -> Unit)? = {
-//        if (checked) {
-//            Icon(imageVector = vector,
-//            contentDescription = null,
-//            modifier = Modifier.size(SwitchDefaults.IconSize)
-//            )
-//        } else {
-//            null
-//        }
-//    }
 
     Switch(
         checked = checked,
@@ -134,7 +120,6 @@ fun SwitchDisplay(isToggleOn: Boolean, onToggle: () -> Unit) {
             checked = it
             onToggle()
         },
-//        thumbContent = icon,
         modifier = Modifier
             .semantics { contentDescription = "switch with icon" }
     )

@@ -11,9 +11,6 @@ import com.google.android.gms.location.DetectedActivity
 import java.time.Duration
 import java.time.Instant
 
-/**
- * Entity representing an activity transition event.
- * */
 @Entity(tableName = "activity_transition_records_table")
 @TypeConverters(TimestampConverter::class)
 data class ActivityTransitionRecord(
@@ -31,10 +28,6 @@ data class ActivityTransitionRecord(
     val timestamp: Instant
 )
 
-/**
- * Enumerated form of Play Services [DetectedActivity] types. Note: some types are not supported by
- * activity transitions API, only supported types are enumerated here.
- */
 enum class DetectedActivityType(val type: Int) {
     IN_VEHICLE(DetectedActivity.IN_VEHICLE),
     ON_BICYCLE(DetectedActivity.ON_BICYCLE),
@@ -51,9 +44,6 @@ enum class DetectedActivityType(val type: Int) {
     }
 }
 
-/**
- * Enumerated form of Play Services [ActivityTransition] types.
- */
 enum class DetectedTransitionType(val type: Int) {
     ENTER(ActivityTransition.ACTIVITY_TRANSITION_ENTER),
     EXIT(ActivityTransition.ACTIVITY_TRANSITION_EXIT);
@@ -65,9 +55,6 @@ enum class DetectedTransitionType(val type: Int) {
 }
 
 
-/**
- * Utility to convert a Play Services [ActivityTransitionEvent] to a database entity type.
- */
 fun ActivityTransitionEvent.asRecord() = ActivityTransitionRecord(
     activityType = DetectedActivityType.forType(activityType),
     transitionType = DetectedTransitionType.forType(transitionType),

@@ -178,15 +178,11 @@ fun DreamyApp(
                     // Activity Recognition
                     onActivityCardClick = { navController.navigate(DreamyScreen.ActivityRecognition.name) },
                     transitionEvents = mostRecentTransitionEvents,
-                    // ? Test
-//                    transitionEvents = transitionTestEvent,
                     lastActivityImage = R.drawable.sitting_girl,
 
                     // Sleep Data
                     onSleepCardClick = { navController.navigate(DreamyScreen.Sleep.name) },
                     sleepEvents = sleepRepo.sleepSegmentEvents,
-                    // ? Test
-//                    sleepEvents = sleepTestEvent,
                     lastSleepQualityImage = R.drawable.sitting_girl
                 )
             }
@@ -199,8 +195,6 @@ fun DreamyApp(
                 SleepScreen(
                     context = context,
                     sleepEvents = sleepRepo.sleepSegmentEvents
-                    // ? Test
-//                    sleepEvents = sleepTestEvent
                 )
             }
 
@@ -219,27 +213,3 @@ fun DreamyApp(
         }
     }
 }
-
-val sleepTestEvent = listOf(
-    SleepSegmentEventEntity(0,0,2),
-    SleepSegmentEventEntity(1674243000_000,1674271800_000,1),
-    SleepSegmentEventEntity(1674329400_000,1674358200_000,0)
-)
-
-val transitionTestEvent = listOf(
-    ActivityTransitionRecord(
-        activityType = DetectedActivityType.IN_VEHICLE,
-        transitionType = DetectedTransitionType.ENTER,
-        timestamp = Instant.ofEpochMilli(1674394200_000)
-    ),
-    ActivityTransitionRecord(
-        activityType = DetectedActivityType.ON_FOOT,
-        transitionType = DetectedTransitionType.ENTER,
-        timestamp = Instant.ofEpochMilli(1674397800_000)
-    ),
-    ActivityTransitionRecord(
-        activityType = DetectedActivityType.STILL,
-        transitionType = DetectedTransitionType.ENTER,
-        timestamp = Instant.now()
-    )
-)

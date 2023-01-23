@@ -9,14 +9,12 @@ class ActivityRecognitionRepository(
     private val activityTransitionUpdateStatus: ActivityTransitionUpdateStatus,
     private val activityTransitionDao: ActivityTransitionDao
 ) {
-    // ? Impl ActivityTransitionUpdateStatus
     val activityTransitionUpdateDataFlow: Flow<Boolean> =
         activityTransitionUpdateStatus.activityTransitionUpdateDataFlow
 
     suspend fun updateActivityTransition(updateStatus: Boolean) =
         activityTransitionUpdateStatus.updateActivityTransitionData(updateStatus)
 
-    // ? Impl ActivityTransitionDao
     val getAllTransitions: Flow<List<ActivityTransitionRecord>> =
         activityTransitionDao.getAll()
 

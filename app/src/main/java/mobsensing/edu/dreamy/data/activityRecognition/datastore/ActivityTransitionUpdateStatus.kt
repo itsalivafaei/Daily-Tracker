@@ -11,43 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import java.io.IOException
 
-// ? Hilt Version
-/*
-class ActivityRecognitionPreferences @Inject constructor(
-    private val dataStore: DataStore<Preferences>
-    ) {
-    private companion object {
-        val ACTIVITY_TRANSITION_UPDATES_TURNED_ON =
-            booleanPreferencesKey("activity_transition_updates_on")
-        const val TAG = "ActivityRecognitionPreferencesDatastore"
-    }
-
-//    val isActivityTransitionUpdatesTurnedOn = dataStore.data.map { preferences ->
-//        preferences[ACTIVITY_TRANSITION_UPDATES_TURNED_ON] ?: false
-//    }
-
-    // ? My code
-    val isActivityTransitionUpdatesTurnedOn: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                Log.e(TAG, "Error reading preferences.", it)
-                emit(emptyPreferences())
-            } else {
-                throw it
-            }
-        }
-        .map { preferences ->
-            preferences[ACTIVITY_TRANSITION_UPDATES_TURNED_ON] ?: false
-        }
-
-    suspend fun setActivityTransitionUpdatesTurnedOn(isOn: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[ACTIVITY_TRANSITION_UPDATES_TURNED_ON] = isOn
-        }
-    }
-}
-*/
-
 class ActivityTransitionUpdateStatus(private val dataStore: DataStore<Preferences>) {
     private companion object {
         val ACTIVITY_TRANSITION_UPDATES_TURNED_ON =
@@ -55,13 +18,6 @@ class ActivityTransitionUpdateStatus(private val dataStore: DataStore<Preference
         const val TAG = "ActivityRecognitionPreferencesDatastore"
     }
 
-/*
-    val isActivityTransitionUpdatesTurnedOn = dataStore.data.map { preferences ->
-        preferences[ACTIVITY_TRANSITION_UPDATES_TURNED_ON] ?: false
-    }
-*/
-
-    // ? My code
     val activityTransitionUpdateDataFlow: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {

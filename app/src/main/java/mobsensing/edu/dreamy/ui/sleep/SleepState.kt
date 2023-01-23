@@ -11,16 +11,6 @@ data class SleepState(
         listOf<SleepClassifyEventEntity>()
 )
 
-
-/*
-data class RepositoryState(private val repository: SleepRepository) {
-    val subscribedToSleepData: Flow<Boolean> = repository.subscribedToSleepDataFlow
-
-    val sleepSegmentEvents: Flow<List<SleepSegmentEventEntity>> = repository.segmentEvents
-
-    val sleepClassifyEvents: Flow<List<SleepClassifyEventEntity>> = repository.classifyEvents
-}
-*/
 data class RepositoryState(
     var subscribedToSleepData: Boolean = false,
     var sleepSegmentEvents: List<SleepSegmentEventEntity> =
@@ -29,12 +19,6 @@ data class RepositoryState(
         listOf<SleepClassifyEventEntity>()
 )
 
-
-data class ReportState(
-    var subscription: Boolean = false,
-    var segmentEventOutput: String = " ",
-    var classifyEventOutput: String = " "
-)
 
 data class Output(
     var header: String = "header init",

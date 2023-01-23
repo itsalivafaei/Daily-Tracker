@@ -29,9 +29,6 @@ import mobsensing.edu.dreamy.data.sleep.db.SleepDatabase
 import mobsensing.edu.dreamy.util.PlayServicesAvailabilityChecker
 import javax.inject.Singleton
 
-/**
- * Sets up repository for all sleep data.
- */
 private const val SLEEP_SUBSCRIPTION_PREFERENCE_NAME = "sleep_subscription_preferences"
 private val Context.sleepDataStore: DataStore<Preferences> by preferencesDataStore(
     name = SLEEP_SUBSCRIPTION_PREFERENCE_NAME
@@ -43,11 +40,8 @@ private val Context.activityTransitionDataStore: DataStore<Preferences> by prefe
 )
 
 /** Custom app entry point for manual dependency injection **/
-//@HiltAndroidApp
 @RequiresApi(Build.VERSION_CODES.S)
 class MainApplication : Application() {
-    // Both database and repository use lazy so they aren't created when the app starts, but only
-    // when repository is first needed.
     private val sleepDatabase by lazy {
         SleepDatabase.getDatabase(applicationContext)
     }
@@ -81,43 +75,4 @@ class MainApplication : Application() {
     val activityTransitionManager by lazy {
         ActivityTransitionManager(applicationContext)
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-
-//    @Provides
-//    @Singleton
-//    fun provideGoogleApiAvailability() = GoogleApiAvailability.getInstance()
-
-    @Provides
-    @Singleton
-    fun provideDataStore(application: Application): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create {
-            application.preferencesDataStoreFile("prefs")
-        }
-    }
-
-//    @Provides
-//    @Singleton
-//    fun provideActivityRecognitionClient(application: Application) =
-//        ActivityRecognition.getClient(application)
-
-//    @Provides
-//    @Singleton
-//    fun provideDatabase(application: Application): ActivityRecognitionDatabase {
-//        return Room.databaseBuilder(
-//            application,
-//            ActivityRecognitionDatabase::class.java,
-//            "activity_recognition_database"
-//        )
-//            .fallbackToDestructiveMigration()
-//            .build()
-//    }
-
-    @Provides
-    @Singleton
-    fun provideActivityTransitionDao(db: ActivityRecognitionDatabase) =
-        db.activityTransitionDao()
 }

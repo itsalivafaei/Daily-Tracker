@@ -8,17 +8,11 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 const val SLEEP_PREFERENCES_NAME = "sleep_preferences"
 
-/*
-* Saves the sleep data subscription status into a [DataStore].
-* Used to check if the app is still listening to changes in sleep data when the app is brought
-* back into the foreground.
-*/
 class SleepSubscriptionStatus(private val dataStore: DataStore<Preferences>) {
     private companion object  {
         val SUBSCRIBED_TO_SLEEP_DATA = booleanPreferencesKey("subscribed_to_sleep_data")

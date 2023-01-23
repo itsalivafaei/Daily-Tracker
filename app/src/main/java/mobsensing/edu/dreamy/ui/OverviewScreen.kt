@@ -66,16 +66,6 @@ fun OverviewScreen(
     ) {
         // ? Header
         // * App name
-/*
-        Text(
-            text = "Dreamy",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 36.sp,
-            modifier = modifier
-                .fillMaxWidth()
-        )
-*/
         Text(
             text = stringResource(id = screenDescription),
             textAlign = TextAlign.Center,

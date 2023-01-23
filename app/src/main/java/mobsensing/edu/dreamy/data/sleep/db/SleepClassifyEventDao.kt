@@ -7,9 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-/*
-* Defines [SleepClassifyEventEntity] database operations.
-*/
 @Dao
 interface SleepClassifyEventDao {
     @Query("SELECT * FROM sleep_classify_events_table ORDER BY time_stamp_seconds DESC")

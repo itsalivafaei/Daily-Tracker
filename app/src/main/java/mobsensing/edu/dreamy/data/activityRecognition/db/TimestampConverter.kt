@@ -3,9 +3,6 @@ package mobsensing.edu.dreamy.data.activityRecognition.db
 import androidx.room.TypeConverter
 import java.time.Instant
 
-/**
- * TypeConverter functions so that Room can process Instants
- * */
 class TimestampConverter {
     @TypeConverter
     fun fromTimestamp(value: Long?): Instant? =
